@@ -5,6 +5,6 @@ export const metadata: Metadata = {
   description: 'A list of products',
 }
 
-export default async function ProductListPage() {
-  return <main>Products...</main>
+export default async function ProductPage() {
+  return <main>Product page!</main>
 }

@@ -10,6 +10,7 @@
     "editor.codeActionsOnSave": {
         "source.fixAll": true
     },
+    "explorer.compactFolders": false,
     "explorer.autoReveal": false,
     "files.exclude": {
       "**/.git": true,

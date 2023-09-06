@@ -1,4 +1,7 @@
+import { Header } from '@/components/Header/Header'
+import { PropsWithChildren } from 'react'
 import type { Metadata } from 'next'
+
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -6,14 +9,13 @@ export const metadata: Metadata = {
   description: 'Awesome products to the best price',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="antialiased">
+        <Header />
+        {children}
+      </body>
     </html>
   )
 }
