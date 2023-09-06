@@ -14,7 +14,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
     <html lang="en">
       <body className="antialiased">
         <Header />
-        {children}
+        <main className="max-w-7xl mx-auto px-6 sm:px-8">{children}</main>
       </body>
     </html>
   )
