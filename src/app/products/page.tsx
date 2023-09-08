@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 
 interface Context {
   category?: string
+  price?: string
 }
 
 export default async function ProductListPage(ctx: PageCtx<{}, Context>) {
@@ -21,14 +22,22 @@ export default async function ProductListPage(ctx: PageCtx<{}, Context>) {
   const allProducts = await getProducts()
 
   const selectedCategories = ctx.searchParams.category?.split(',') ?? []
+  const selectedPrices = ctx.searchParams.price?.split('-') ?? []
 
-  const products = allProducts.filter(p => {
-    if (!selectedCategories.length) {
-      return true
-    }
+  const fromPrice = selectedPrices[0] ? parseInt(selectedPrices[0]) : 0
+  const toPrice = selectedPrices[1] ? parseInt(selectedPrices[1]) : 1000
 
-    return selectedCategories.includes(p.category)
-  })
+  const products = allProducts
+    .filter(({ category }) => {
+      if (!selectedCategories.length) {
+        return true
+      }
+
+      return selectedCategories.includes(category)
+    })
+    .filter(({ price }) => {
+      return price >= fromPrice && price <= toPrice
+    })
 
   return (
     <>
@@ -54,11 +63,10 @@ export default async function ProductListPage(ctx: PageCtx<{}, Context>) {
             />
 
             <ProductRangeFilter
-              fromSearchParam="fromPrice"
-              toSearchParam="toPrice"
-              maxValue={1000}
+              minValue={fromPrice}
+              maxValue={toPrice}
+              searchParam="price"
               label="Price"
-              minValue={0}
             />
           </div>
 

@@ -22,8 +22,8 @@ export const ProductCheckboxFilter: FC<Props> = props => {
   const router = useRouter()
 
   useEffect(() => {
-    router.push(`${pathname}?${createQueryString('category', values)}`)
-  }, [values, createQueryString, router, pathname])
+    router.push(`${pathname}?${createQueryString(searchParam, values)}`)
+  }, [values, createQueryString, router, pathname, searchParam])
 
   return (
     <ProductFilter label={label} isOpen={isOpen}>
