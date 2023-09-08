@@ -1,19 +1,16 @@
 'use client'
 
-import { useQueryString } from '@/hooks/useQueryString'
-import { capitalizeFirstLetter } from '@/utils/capitalizeFirstLetter'
 import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
-import { FC, FormEvent, useCallback, useMemo, useState } from 'react'
+import { FC, PropsWithChildren, useMemo, useState } from 'react'
 
-interface Props {
-  searchParam: string
-  options: string[]
-  isOpen: boolean
+export interface Props {
+  isOpen?: boolean
   label: string
 }
 
-export const ProductFilter: FC<Props> = props => {
-  const { isOpen: initialIsOpen, searchParam, options, label } = props
+export const ProductFilter: FC<PropsWithChildren<Props>> = props => {
+  const { isOpen: initialIsOpen = false, label, children } = props
+
   const [isOpen, setIsOpen] = useState<boolean>(initialIsOpen)
 
   const ToggleIcon = useMemo(() => {
@@ -36,23 +33,7 @@ export const ProductFilter: FC<Props> = props => {
           </span>
         </button>
       </h3>
-      {isOpen && (
-        <form className="pt-6 space-y-4">
-          {options.map((option, index) => (
-            <label
-              className="flex items-center"
-              key={`${searchParam}-${index}`}>
-              <input
-                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                type="checkbox"
-              />
-              <span className="text-sm ml-2">
-                {capitalizeFirstLetter(option)}
-              </span>
-            </label>
-          ))}
-        </form>
-      )}
+      {isOpen && <div className="pt-6">{children}</div>}
     </div>
   )
 }

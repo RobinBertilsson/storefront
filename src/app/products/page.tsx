@@ -1,16 +1,34 @@
 import type { Metadata } from 'next'
-import { ChevronDownIcon, MinusIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { getCategories } from '@/sdk/client/getCategories'
-import { capitalizeFirstLetter } from '@/utils/capitalizeFirstLetter'
-import { ProductFilter } from '@/components/ProductFilter/ProductFilter'
+import { ProductCheckboxFilter } from '@/components/ProductCheckboxFilter/ProductCheckboxFilter'
+import { ProductRangeFilter } from '@/components/ProductRangeFilter/ProductRangeFilter'
+import { getProducts } from '@/sdk/client/getProducts'
+import { PageCtx } from '../types/PageCtx'
+import { ProductCard } from '@/components/ProductCard/ProductCard'
 
 export const metadata: Metadata = {
   title: 'My Shop - Products',
   description: 'A list of products',
 }
 
-export default async function ProductListPage() {
-  const categories = await getCategories()
+interface Context {
+  category?: string
+}
+
+export default async function ProductListPage(ctx: PageCtx<{}, Context>) {
+  const allCategories = await getCategories()
+  const allProducts = await getProducts()
+
+  const selectedCategories = ctx.searchParams.category?.split(',') ?? []
+
+  const products = allProducts.filter(p => {
+    if (!selectedCategories.length) {
+      return true
+    }
+
+    return selectedCategories.includes(p.category)
+  })
 
   return (
     <>
@@ -27,15 +45,30 @@ export default async function ProductListPage() {
       <section className="pb-24 pt-6">
         <div className="grid grid-cols-4 gap-y-10 gap-x-8">
           <div className="col-span-1">
-            <ProductFilter
+            <ProductCheckboxFilter
+              initialValues={selectedCategories}
               searchParam="category"
-              options={categories}
+              options={allCategories}
               label="Category"
               isOpen
             />
+
+            <ProductRangeFilter
+              fromSearchParam="fromPrice"
+              toSearchParam="toPrice"
+              maxValue={1000}
+              label="Price"
+              minValue={0}
+            />
           </div>
 
-          <div className="col-span-3">bb</div>
+          <div className="col-span-3">
+            <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+              {products.map(product => (
+                <ProductCard key={product.id} {...product} />
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </>
